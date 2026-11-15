@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+  <link rel="stylesheet" href="/css/student/student.css?v=20261115-notifications-1" />
+</head>
+<body>
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sb-hd"><div class="sb-brand"><div class="sb-icon">T</div><div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div></div></div>
+    <div class="sb-user"><div class="sb-name" id="sb-name"></div><div class="sb-email" id="sb-email"></div><div class="role-badge" id="sb-role-badge"></div></div>
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <a class="nav-item" href="/pages/student/repository.html" data-title="Home"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</a>
+      <a class="nav-item" href="/pages/student/upload.html" data-title="Upload Thesis"><span class="ni-icon"><i class="bi bi-upload"></i></span> Upload Thesis</a>
+      <a class="nav-item active" href="/pages/student/notifications.html" data-title="Notifications"><span class="ni-icon"><i class="bi bi-bell-fill"></i></span> Notifications <span class="notification-nav-badge" data-notification-count hidden></span></a>
+      <div class="nav-label">Tools</div>
+      <a class="nav-item" href="/pages/student/scanner.html" data-title="QR Scanner"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</a>
+    </nav>
+    <div class="sb-footer"><button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar"><div style="display:flex;align-items:center;gap:.75rem;"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Notifications</div></div></div>
+    <div class="page active"><section class="card-box notification-page-card"><div id="notification-list" aria-live="polite"></div></section></div>
+  </main>
+</div>
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script><script src="/js/shared/data.js"></script><script src="/js/shared/ui.js?v=20261108-testing-1"></script><script src="/js/shared/auth.js?v=20261106-approval-2"></script><script src="/js/shared/thesis-crud.js"></script><script src="/js/shared/notification-badge.js"></script><script src="/js/student/notifications.js?v=20261115-notifications-1"></script>
+<script>(async () => { if (!await requireAuth(['student'])) return; initShell(); initNotificationBadge(); loadStudentNotifications(); })();</script>
+</body>
+</html>

@@ -1,55 +1,96 @@
-# ThesisLink
+# ThesisLink Public
 
-Public source repository for **ThesisLink**.
+ThesisLink is a web-based research repository for the College of Computing Studies, Information and Communication Technology. This repository contains the school-hosted PHP/MySQL implementation and its Guest, Student, Faculty, and Administrator workspaces.
 
-## About
+## Included features
 
-This repository contains the source code and supporting documentation for
-ThesisLink. The repository is public so that the project can be reviewed,
-used, and developed collaboratively.
+- Public browsing, search, filtering, QR scanning, and controlled thesis viewing
+- Institutional email/password and Google sign-in
+- Student submissions, duplicate warnings, review remarks, notifications, correction, and resubmission
+- Faculty advisee reports, abstract reports, and approval-sheet reports
+- Administrator account, repository, review, reporting, and audit-log tools
+- Cloudflare R2 file storage, SMTP email delivery, and MySQL persistence
+- One-time `/setup` installer and command-line maintenance utilities
 
-## Project status
+## Requirements
 
-The project is under active development. Setup and usage instructions will be
-added here as the implementation becomes available.
+- PHP 8.2 or later
+- MySQL or MariaDB with InnoDB
+- PHP extensions: `pdo_mysql`, `intl`, `mbstring`, `openssl`, `gd`, `curl`, and `zip`
+- Apache rewrite support and HTTPS for production
+- Composer on the development computer
+- Cloudflare R2, SMTP, and Google OAuth credentials for live integrations
 
-## Contributing
+## Source installation
 
-Contributions, suggestions, and issue reports are welcome. Before opening a
-pull request:
+Install the PHP dependencies without committing them:
 
-1. Check the existing issues and documentation.
-2. Keep changes focused and explain the reason for the change.
-3. Make sure that any code or documentation you submit can be distributed
-   under the license below.
+```bash
+composer install --no-dev --prefer-dist
+```
 
-## Copyright and intellectual property
+Create a deployable archive:
 
-Copyright © 2026 Jheric Raton Mayubay. All rights reserved except for the
-rights expressly granted by the MIT License.
+```bash
+php scripts/package.php
+```
 
-Unless a file states otherwise:
+The archive is written to `dist/`. It contains the PHP dependencies, compiled frontend, database schema, and a unique `INSTALL-CODE.txt`. Keep that code private.
 
-- The ThesisLink source code and original documentation are owned by Jheric
-  Raton Mayubay.
-- The MIT License grants permission to use, copy, modify, merge, publish,
-  distribute, sublicense, and sell copies of the software, subject to its
-  conditions.
-- The copyright notice and license notice must remain in copies or
-  substantial portions of the software.
-- This license does not grant rights to use the ThesisLink name, branding,
-  logos, or trademarks. Permission to use those materials must be obtained
-  separately, if applicable.
-- Third-party names, trademarks, code, and other materials remain the
-  property of their respective owners and are governed by their own terms.
+## Server installation
 
-No ownership of a contributor's separately owned work is transferred by
-contributing it. By submitting a contribution, the contributor grants the
-project the permissions needed to use and distribute that contribution under
-the project's license.
+1. Create an empty MySQL or MariaDB database and an application database user.
+2. Extract the generated deployment ZIP outside the public web directory.
+3. Point the domain document root to the extracted `public/` directory.
+4. Open `https://YOUR-DOMAIN/setup`.
+5. Enter the installation code, exact HTTPS application URL, database details, R2 credentials, SMTP settings, Google Client ID, and first Administrator account.
+6. Complete installation and confirm that `/setup` is locked afterward.
+
+Only `public/` should be web-accessible. Keep `config/`, `resources/`, `scripts/`, `src/`, `vendor/`, exports, and runtime storage outside the document root.
+
+## Administrator accounts
+
+The first verified Administrator is created by `/setup`. To add another Administrator later, run this command from the application directory:
+
+```bash
+php scripts/admin.php
+```
+
+The command refuses to overwrite or promote an existing account.
+
+## Testing
+
+The integration suite uses an isolated MariaDB instance, local PHP server, mock object storage, and development mailbox. It does not use live credentials.
+
+```powershell
+$env:PHP_BIN = 'C:\path\to\php.exe'
+$env:MARIADB_HOME = 'C:\path\to\mysql'
+node tests/integration.js
+```
+
+See [MIGRATION.md](MIGRATION.md) for data migration and production cutover guidance.
+
+The optional Supabase export utility requires Node.js and its single package dependency:
+
+```bash
+npm install
+npm run export:supabase
+```
+
+## Secrets and generated data
+
+Do not commit any of the following:
+
+- `config/config.local.php`
+- `.env` files
+- `INSTALL-CODE.txt` or `config/install-code.php`
+- `vendor/`, `.runtime/`, `storage/`, `exports/`, or `dist/`
+- Database exports, API keys, passwords, tokens, or production logs
+
+The provided `.gitignore` excludes these paths. Production credentials must be entered through the one-time setup page and stored only on the server.
 
 ## License
 
-ThesisLink is licensed under the [MIT License](LICENSE). The license is
-provided without warranty; see the full license text for the applicable
-permissions, limitations, and disclaimer.
+Copyright (c) 2026 Jheric Raton Mayubay.
+
+ThesisLink is available under the [MIT License](LICENSE). Third-party components remain subject to their respective licenses. The ThesisLink name, institutional marks, and logos are not granted for independent branding use by the MIT License.

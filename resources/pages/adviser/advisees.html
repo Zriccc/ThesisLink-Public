@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advisees — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+  <script src="/vendor/mammoth/mammoth.browser.js"></script>
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/shared/thesis-grid.css?v=20261106-compact-2" />
+  <link rel="stylesheet" href="/css/shared/search.css?v=20261108-sort-alignment-1" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+  <link rel="stylesheet" href="/css/adviser/advisees.css?v=20261106-compact-2" />
+</head>
+<body>
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sb-hd"><div class="sb-logos"><div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.55rem;">ISU</div><div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.45rem;">CCSI</div></div><div class="sb-brand"><div class="sb-icon">T</div><div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div></div></div>
+    <div class="sb-user"><div class="sb-name" id="sb-name"></div><div class="sb-email" id="sb-email"></div><div class="role-badge" id="sb-role-badge"></div></div>
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item" onclick="window.location.href='/pages/adviser/repository.html'" data-title="Home" data-href="/pages/adviser/repository.html"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</div>
+      <div class="nav-label">Management</div>
+      <a class="nav-item" href="/pages/adviser/reports.html" data-title="Reports"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</a>
+      <div class="nav-item active" onclick="window.location.href='/pages/adviser/advisees.html'" data-title="Advisees" data-href="/pages/adviser/advisees.html"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Advisees</div>
+      <div class="nav-label">Tools</div>
+      <div class="nav-item" onclick="window.location.href='/pages/adviser/scanner.html'" data-title="QR Scanner" data-href="/pages/adviser/scanner.html"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</div>
+    </nav>
+    <div class="sb-footer"><button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button></div>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div style="display:flex;align-items:center;gap:.75rem;"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Advisees</div></div><div class="tb-right"></div></div>
+    <main class="page active admin-dashboard-page adviser-dashboard-page">
+      <section class="card-box repository-list-card advisee-repository-card">
+        <div class="advisee-filters">
+          <div class="advisee-filter-controls" id="advisee-filter-buttons"></div>
+          <span id="advisee-result-count" aria-live="polite"></span>
+        </div>
+        <div class="advisee-filter-options" id="advisee-filter-options" hidden></div>
+        <div class="thesis-grid repository-table-mode advisee-repository-grid" id="advisee-results"></div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="modal-overlay" id="thesis-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-text" id="m-title"></div>
+      <button class="modal-close" onclick="closeModal('thesis-modal')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="meta-row" id="m-meta"></div>
+      <div class="section-divider">Abstract</div>
+      <div class="abstract-text" id="m-abstract"></div>
+      <div id="m-chapters"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="file-viewer-modal">
+  <div class="modal-box" style="max-width:920px;width:96vw;padding:0;overflow:hidden;">
+    <div class="fv-header">
+      <div class="fv-header-info">
+        <span class="fv-header-icon" id="fv-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
+        <div><div class="fv-header-title" id="fv-title">File</div><div class="fv-header-sub" id="fv-sub">View Only</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="fv-view-badge" id="fv-guest-badge" style="display:none;"><i class="bi bi-eye-fill"></i> Guest View</span>
+        <span class="fv-view-badge"><i class="bi bi-eye-fill"></i> View Only</span>
+        <button class="fv-close-btn" onclick="closeModal('file-viewer-modal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </div>
+    <div id="fv-guest-notice" style="display:none;"></div>
+    <div id="fv-body" class="fv-body"></div>
+  </div>
+</div>
+<div class="toast-custom" id="toast-el"></div>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script><script src="/js/shared/ui.js?v=20261108-testing-1"></script><script src="/js/shared/auth.js?v=20261106-approval-2"></script><script src="/js/shared/thesis-render.js"></script><script src="/js/shared/thesis-crud.js"></script><script src="/js/shared/dashboard.js"></script><script src="/js/adviser/advisees.js"></script>
+<script>
+(async () => {if (!await requireAuth(['faculty'])) return; await loadDB(); initShell(); initAdvisees();
+})();
+</script>
+</body>
+</html>

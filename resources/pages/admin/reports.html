@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+  <link rel="stylesheet" href="/css/shared/reports.css?v=20261106-responsive-1" />
+</head>
+<body>
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sb-hd">
+      <div class="sb-logos">
+        <div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.55rem;font-family:var(--font-serif);">ISU</div>
+        <div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.45rem;font-family:var(--font-serif);">CCSI</div>
+      </div>
+      <div class="sb-brand"><div class="sb-icon">T</div><div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div></div>
+    </div>
+    <div class="sb-user"><div class="sb-name" id="sb-name"></div><div class="sb-email" id="sb-email"></div><div class="role-badge" id="sb-role-badge"></div></div>
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/dashboard.html'" data-title="Home" data-href="/pages/admin/dashboard.html"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/repository.html'" data-title="Repository" data-href="/pages/admin/repository.html"><span class="ni-icon"><i class="bi bi-journal-bookmark-fill"></i></span> Repository</div>
+      <div class="nav-label">Management</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/upload.html'" data-title="Upload Thesis" data-href="/pages/admin/upload.html"><span class="ni-icon"><i class="bi bi-upload"></i></span> Upload Thesis</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/requests.html'" data-title="Upload Requests" data-href="/pages/admin/requests.html"><span class="ni-icon"><i class="bi bi-inbox-fill"></i></span> Upload Requests</div>
+      <div class="nav-item active" onclick="window.location.href='/pages/admin/reports.html'" data-title="Reports" data-href="/pages/admin/reports.html"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/users.html'" data-title="Users" data-href="/pages/admin/users.html"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Users</div>
+      <a class="nav-item" href="/pages/admin/logs.html" data-title="Logs"><span class="ni-icon"><i class="bi bi-clock-history"></i></span> Logs</a>
+      <div class="nav-label">Tools</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/scanner.html'" data-title="QR Scanner" data-href="/pages/admin/scanner.html"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</div>
+    </nav>
+    <div class="sb-footer"><button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button></div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:.75rem;"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Reports</div></div>
+      <div class="tb-right"></div>
+    </div>
+
+    <main class="page active admin-reports-page">
+      <section class="card-box report-controls-card no-print">
+        <div class="card-header-row"><div><div class="card-title-text">Yearly Thesis Report</div><div class="report-subtitle">Review advisers, their advisees, and assigned theses by year.</div></div></div>
+        <div class="report-filter-tabs" aria-label="Filter category"><button type="button" data-filter="year" onclick="showReportFilter('year')">Year</button><button type="button" data-filter="course" onclick="showReportFilter('course')">Program</button><button type="button" data-filter="adviser" onclick="showReportFilter('adviser')">Adviser</button></div><div id="report-filter-options" class="report-filter-options"></div><div class="report-controls">
+          <label class="report-field" hidden><span>Adviser</span><select id="report-adviser"><option value="">All advisers</option></select></label>
+          <label class="report-field" hidden><span>Year</span><select id="report-year"><option value="">All years</option></select></label>
+          <label class="report-field" hidden><span>Program</span><select id="report-course"><option value="">All programs</option></select></label>
+<button class="report-btn report-btn-primary" id="report-print" type="button" onclick="printReport()"><i class="bi bi-printer"></i> Download PDF</button>
+        </div>
+      </section>
+
+      <section class="card-box report-document-tools no-print" id="report-document-tools" aria-labelledby="report-document-tools-title">
+        <div class="report-document-tools-heading">
+          <div><h2 id="report-document-tools-title">PDF Documents</h2><p>Select a thesis and enter the current signatories before generating formal documents.</p></div>
+        </div>
+        <div class="report-document-grid">
+          <label class="report-field report-document-thesis"><span>Thesis *</span><select id="document-thesis" required><option value="">Select a thesis</option></select></label>
+          <label class="report-field"><span>Panel Member 1 *</span><select id="approval-panel-one" required><option value="">Select a panel member</option></select></label>
+          <label class="report-field"><span>Panel Member 2 *</span><select id="approval-panel-two" required><option value="">Select a panel member</option></select></label>
+          <label class="report-field"><span>Program Chair *</span><input id="document-program-chair" maxlength="120" autocomplete="off" placeholder="Dominic Cabauatan" /></label>
+          <label class="report-field"><span>Dean *</span><input id="document-dean" maxlength="120" autocomplete="off" placeholder="Rosemary L. Buraga, DIT" /></label>
+          <div class="report-document-actions">
+            <button class="report-btn" id="abstract-download" type="button" onclick="downloadAbstractReport()" disabled><i class="bi bi-file-earmark-text"></i> Download Abstract</button>
+            <button class="report-btn report-btn-primary" id="approval-download" type="button" onclick="downloadApprovalSheet()" disabled><i class="bi bi-file-earmark-check"></i> Download Approval Sheet</button>
+          </div>
+        </div>
+        <p class="report-document-error" id="report-document-error" role="alert" aria-live="polite"></p>
+      </section>
+
+      <section class="card-box report-output" id="report-output">
+        <header class="report-screen-heading no-print">
+          <div><h2>Thesis Masterlist</h2><p>Tabulated theses matching the selected filters.</p></div>
+          <div class="report-date" id="report-date"></div>
+        </header>
+        <header class="report-heading report-document-heading" aria-hidden="true">
+          <div class="report-letterhead">
+            <img class="report-logo" src="/assets/Isu_logo.jpg" alt="Isabela State University logo" width="72" height="72" />
+            <div class="report-institution"><p>Republic of the Philippines</p><p class="report-university">ISABELA STATE UNIVERSITY</p><p>Cabagan, Isabela</p></div>
+            <img class="report-logo" src="/assets/ccsict-logo.png" alt="CCSICT logo" width="72" height="72" />
+          </div>
+          <div class="report-college">COLLEGE OF COMPUTING STUDIES, INFORMATION AND COMMUNICATION TECHNOLOGY</div>
+          <p class="report-center-name">CCSICT LEARNING AND INNOVATION CENTER</p><h1>MASTERLIST OF THESES</h1>
+        </header>
+        <div class="report-table-wrap">
+          <table class="data-table report-table">
+            <caption class="visually-hidden">Thesis masterlist matching the selected filters and sort order</caption>
+            <colgroup><col style="width:4%"><col style="width:30%"><col style="width:32%"><col style="width:20%"><col style="width:7%"><col style="width:7%"></colgroup>
+            <thead><tr><th>No.</th><th>Title</th><th>Author(s)</th><th>Adviser</th><th>Program</th><th>Year</th></tr></thead>
+            <tbody id="report-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script>
+<script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+<script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+<script src="/vendor/mammoth/mammoth.browser.js"></script>
+<script src="/js/shared/thesis-render.js"></script>
+<script src="/js/shared/thesis-crud.js"></script>
+<script src="/vendor/jspdf/dist/jspdf.umd.min.js"></script>
+<script src="/vendor/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="/js/shared/approval-template.js?v=20261108-approval-format-4"></script>
+<script src="/js/shared/abstract-template.js?v=20261115-abstract-format-1"></script>
+<script src="/js/shared/reports.js?v=20261115-abstract-format-1"></script>
+<script>
+(async () => {
+  if (!await requireAuth(['admin'])) return;
+  await loadDB();
+  initShell();
+  installThesisViewerModals();
+  await initReports();
+
+})();
+</script>
+</body>
+</html>

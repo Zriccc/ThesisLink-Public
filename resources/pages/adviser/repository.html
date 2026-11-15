@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repository — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+  <script src="/vendor/qrcodejs/qrcode.min.js"></script>
+  <script src="/vendor/mammoth/mammoth.browser.js"></script>
+  <script src="/vendor/jsqr/dist/jsQR.js"></script>
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/shared/thesis-grid.css?v=20261106-compact-2" />
+  <link rel="stylesheet" href="/css/shared/search.css?v=20261108-sort-alignment-1" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+  <link rel="stylesheet" href="/css/student/student.css?v=20261106-student-approval-1" />
+</head>
+<body>
+
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+
+  <aside class="sidebar">
+    <div class="sb-hd">
+      <div class="sb-logos">
+        <div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.55rem;font-family:var(--font-serif);">ISU</div>
+        <div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.45rem;font-family:var(--font-serif);">CCSI</div>
+      </div>
+      <div class="sb-brand">
+        <div class="sb-icon">T</div>
+        <div>
+          <div class="sb-title">ThesisLink</div>
+          <div class="sb-clg">CCSICT Repository</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-user">
+      <div class="sb-name" id="sb-name"></div>
+      <div class="sb-email" id="sb-email"></div>
+      <div class="role-badge" id="sb-role-badge"></div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item active" onclick="window.location.href='/pages/adviser/repository.html'" data-title="Home" data-href="/pages/adviser/repository.html"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</div>
+      <div class="nav-label">Management</div>
+      <a class="nav-item" href="/pages/adviser/reports.html" data-title="Reports"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</a>
+      <div class="nav-item" onclick="window.location.href='/pages/adviser/advisees.html'" data-title="Advisees" data-href="/pages/adviser/advisees.html"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Advisees</div>
+      <div class="nav-label">Tools</div>
+      <div class="nav-item" onclick="window.location.href='/pages/adviser/scanner.html'" data-title="QR Scanner" data-href="/pages/adviser/scanner.html"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</div>
+    </nav>
+
+    <div class="sb-footer">
+      <button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+  <div class="topbar repository-topbar">
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
+      <div class="tb-title" id="tb-title">Home</div>
+    </div>
+    <div id="rss-wrap" class="topbar-search"></div>
+
+  </div>
+
+    <div class="page active admin-repository-page student-repository-page">
+      <div id="repository-filter-anchor" class="student-filter-anchor"></div>
+      <section class="student-portal-hero" aria-labelledby="adviser-portal-title">
+        <div class="student-portal-eyebrow">Faculty Portal</div>
+        <h1 id="adviser-portal-title">
+          Explore <span id="adviser-research-count">0</span> <em>research papers</em> from CCSICT
+        </h1>
+        <p>Browse all available theses, read abstracts, view documents, and scan QR codes.</p>
+      </section>
+      <div id="rss-pills"></div>
+      <section class="card-box repository-list-card">
+        <div class="thesis-grid" id="repo-grid"></div>
+      </section>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     THESIS MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="thesis-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-text" id="m-title"></div>
+      <div class="modal-close" onclick="closeModal('thesis-modal')"><i class="bi bi-x-lg"></i></div>
+    </div>
+    <div class="modal-body">
+      <div class="meta-row" id="m-meta"></div>
+      <div class="section-divider">Abstract</div>
+      <div class="abstract-text" id="m-abstract"></div>
+      <div id="m-chapters"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     QR MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="qr-modal">
+  <div class="modal-box" style="max-width:340px;">
+    <div class="qr-modal-hd">
+      <div>
+        <div class="qr-modal-hd-title"><i class="bi bi-qr-code"></i> QR Code</div>
+        <div class="qr-modal-hd-sub">Scan to access this thesis</div>
+      </div>
+      <button class="qr-modal-hd-close" onclick="closeModal('qr-modal')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:26px 22px 24px;">
+      <div class="qr-modal-thesis-name" id="qr-title"></div>
+      <div class="qr-modal-canvas-wrap" style="margin:16px auto 20px;">
+        <div id="qr-box"></div>
+      </div>
+      <button class="qr-modal-dl-btn" id="qr-dl-btn"><i class="bi bi-download"></i> Download QR Code (.png)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     FILE VIEWER MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="file-viewer-modal">
+  <div class="modal-box" style="max-width:920px;width:96vw;padding:0;overflow:hidden;">
+    <div class="fv-header">
+      <div class="fv-header-info">
+        <span class="fv-header-icon" id="fv-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
+        <div>
+          <div class="fv-header-title" id="fv-title">File</div>
+          <div class="fv-header-sub" id="fv-sub">View Only</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="fv-view-badge" id="fv-guest-badge" style="display:none;"><i class="bi bi-eye-fill"></i> Guest View</span>
+        <span class="fv-view-badge"><i class="bi bi-eye-fill"></i> View Only</span>
+        <button class="fv-close-btn" onclick="closeModal('file-viewer-modal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </div>
+    <div id="fv-guest-notice" style="display:none;background:#fffbea;border-bottom:1px solid #fcd34d;padding:0.75rem 1.5rem;font-size:0.85rem;color:#92400e;">
+      <i class="bi bi-lock-fill"></i> <strong>Guest Viewing:</strong> Printing and downloading are disabled for security. You can view the document only.
+    </div>
+    <div id="fv-body" class="fv-body"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     QR AUTO-SHOW MODAL (after publish)
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="qr-auto-modal">
+  <div class="modal-box" style="max-width:360px;">
+    <div class="qr-modal-hd">
+      <div>
+        <div class="qr-modal-hd-title"><i class="bi bi-check-circle-fill"></i> Published! QR Generated</div>
+        <div class="qr-modal-hd-sub" id="qr-auto-sub">Scan or download the QR code</div>
+      </div>
+      <button class="qr-modal-hd-close" onclick="closeModal('qr-auto-modal')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:24px 22px 22px;">
+      <div class="qr-modal-thesis-name" id="qr-auto-title"></div>
+      <div class="qr-modal-canvas-wrap" style="margin:16px auto 20px;">
+        <div id="qr-auto-box"></div>
+      </div>
+      <button class="qr-modal-dl-btn" id="qr-auto-dl-btn"><i class="bi bi-download"></i> Download QR Code (.png)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     EDIT THESIS MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal-box" style="max-width:660px;">
+    <div class="modal-header">
+      <div class="modal-title-text"><i class="bi bi-pencil-square"></i> Edit Thesis</div>
+      <div class="modal-close" onclick="closeModal('edit-modal')"><i class="bi bi-x-lg"></i></div>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg-item fg-full">
+          <label class="fg-label">Full Title *</label>
+          <input class="fg-input" type="text" id="edit-title" placeholder="ThesisLink: A Web-Based Hybrid Repository System" />
+        </div>
+        <div class="fg-item">
+          <label class="fg-label">Author(s) *</label>
+          <input class="fg-input" type="text" id="edit-auth" placeholder="Jheric R. Mayubay; Roselyn F. Dolosa" />
+        </div>
+        <div class="fg-item">
+          <label class="fg-label">Adviser</label>
+          <input required class="fg-input" id="edit-adv" maxlength="120" placeholder="Madeline M. Taggueg" >
+        </div>
+        <div class="fg-item">
+          <label class="fg-label">Program *</label>
+          <select required class="fg-select" id="edit-course">
+            <option value="" disabled selected>Select program</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSDSA">BSDSA</option>
+          </select>
+        </div>
+        <div class="fg-item">
+          <label class="fg-label">Year *</label>
+          <input class="fg-input" type="number" id="edit-year" min="2010" max="2035" placeholder="2026" />
+        </div>
+        <div class="fg-item fg-full">
+          <label class="fg-label">Keywords *</label>
+          <input class="fg-input" type="text" required id="edit-kw" placeholder="repository, thesis, QR code, access control, research" />
+        </div>
+      </div>
+      <div class="fg-item" style="margin-top:.5rem;">
+        <label class="fg-label">Abstract *</label>
+        <textarea class="fg-textarea" required id="edit-abs" style="min-height:110px;" placeholder="This study developed ThesisLink, a web-based repository for managing and discovering approved research projects." ></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.25rem;">
+        <button onclick="closeModal('edit-modal')"
+          style="padding:10px 20px;border:1px solid var(--bdr);border-radius:9px;background:white;color:var(--mut);font-family:var(--font-sans);font-size:.88rem;font-weight:600;cursor:pointer;">
+          Cancel
+        </button>
+        <button class="btn-primary-custom" onclick="saveEditThesis()"><i class="bi bi-save-fill"></i> Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     DELETE CONFIRM MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header" style="border-bottom:none;padding-bottom:.5rem;">
+      <div class="modal-title-text" style="color:var(--red);"><i class="bi bi-trash-fill"></i> Delete Thesis</div>
+      <div class="modal-close" onclick="closeModal('delete-modal')"><i class="bi bi-x-lg"></i></div>
+    </div>
+    <div class="modal-body" style="padding-top:0;">
+      <p style="font-size:.9rem;color:var(--mut);line-height:1.6;margin-bottom:.5rem;">
+        Are you sure you want to delete:
+      </p>
+      <div id="delete-thesis-name"
+        style="font-family:var(--font-serif);font-weight:700;color:var(--gdk);font-size:.95rem;
+               background:var(--gbg);border:1px solid var(--bdr);border-radius:9px;padding:.75rem 1rem;margin-bottom:1.25rem;">
+      </div>
+      <p style="font-size:.8rem;color:var(--red);margin-bottom:1.5rem;"><i class="bi bi-exclamation-triangle-fill"></i> This action cannot be undone.</p>
+      <div style="display:flex;justify-content:flex-end;gap:.75rem;">
+        <button onclick="closeModal('delete-modal')"
+          style="padding:10px 20px;border:1px solid var(--bdr);border-radius:9px;background:white;color:var(--mut);font-family:var(--font-sans);font-size:.88rem;font-weight:600;cursor:pointer;">
+          Cancel
+        </button>
+        <button onclick="confirmDelete()"
+          style="padding:10px 22px;border:none;border-radius:9px;background:var(--red);color:white;font-weight:600;font-size:.88rem;font-family:var(--font-sans);cursor:pointer;">
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+
+<script src="/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script>
+<script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+<script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+<script src="/js/shared/thesis-render.js"></script>
+<script src="/js/shared/thesis-crud.js"></script>
+<script src="/js/shared/thesis-search.js?v=20261108-testing-1"></script>
+
+<script>
+(async () => {
+  if (!await requireAuth(['faculty'])) return;
+  await loadDB();
+  document.getElementById('adviser-research-count').textContent = DB.length.toLocaleString();
+  initShell();
+  mountSearch('rss-wrap', 'rss-pills', 'repo-grid', repoFilters);
+  renderRepositoryResults('repo-grid', DB, repoFilters);
+  await openRepositoryThesisFromUrl();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+  <link rel="stylesheet" href="/css/shared/reports.css?v=20261106-responsive-1" />
+  <link rel="stylesheet" href="/css/adviser/adviser.css?v=20261108-compact-report" />
+</head>
+<body>
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sb-hd"><div class="sb-brand"><div class="sb-icon">T</div><div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div></div></div>
+    <div class="sb-user"><div class="sb-name" id="sb-name"></div><div class="sb-email" id="sb-email"></div><div class="role-badge" id="sb-role-badge"></div></div>
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <a class="nav-item" href="/pages/adviser/repository.html" data-title="Home"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</a>
+      <div class="nav-label">Management</div>
+      <a class="nav-item active" href="/pages/adviser/reports.html" data-title="Reports"><span class="ni-icon"><i class="bi bi-bar-chart-fill"></i></span> Reports</a>
+      <a class="nav-item" href="/pages/adviser/advisees.html" data-title="Advisees"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Advisees</a>
+      <div class="nav-label">Tools</div>
+      <a class="nav-item" href="/pages/adviser/scanner.html" data-title="QR Scanner"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</a>
+    </nav>
+    <div class="sb-footer"><button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button></div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar"><div style="display:flex;align-items:center;gap:.75rem;"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Reports</div></div></div>
+    <div class="page active faculty-approval-reports">
+      <section class="card-box faculty-report-controls">
+        <div class="faculty-report-heading"><h1>Advisee reports</h1><p>Generate filtered abstract or approval-sheet reports from approved advisee theses.</p></div>
+        <label class="faculty-report-field faculty-report-type" for="faculty-report-type"><span>Report type</span><select id="faculty-report-type" onchange="selectFacultyReportType(this.value)"><option value="abstract">Abstract report</option><option value="approval">Approval sheets</option></select></label>
+        <label class="faculty-report-field faculty-report-program" for="approval-report-program"><span>Program</span><select id="approval-report-program" onchange="selectFacultyApprovalFilter('program', this.value)"><option value="">All programs</option></select></label>
+        <label class="faculty-report-field faculty-report-year" for="approval-report-year"><span>Year</span><select id="approval-report-year" onchange="selectFacultyApprovalFilter('year', this.value)"><option value="">All years</option></select></label>
+        <button id="approval-report-download" class="report-btn report-btn-primary" type="button" onclick="downloadSelectedFacultyReport()"><i class="bi bi-file-earmark-text"></i> Download abstract report</button>
+        <p id="faculty-report-status" class="faculty-report-status" role="status" aria-live="polite" hidden></p>
+      </section>
+      <section class="card-box request-list-card">
+        <div class="request-list-heading"><h2>Approved advisee theses</h2><p id="approval-report-count">Loading approved theses...</p></div>
+        <div class="request-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Thesis</th><th>Adviser</th><th>Program</th><th>Year</th></tr></thead>
+            <tbody id="approval-sheets-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script>
+<script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+<script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+<script src="/vendor/mammoth/mammoth.browser.js"></script>
+<script src="/js/shared/thesis-render.js"></script>
+<script src="/js/shared/thesis-crud.js"></script>
+<script src="/vendor/jspdf/dist/jspdf.umd.min.js"></script>
+<script src="/js/shared/abstract-template.js?v=20261115-abstract-format-1"></script>
+<script src="/js/adviser/approval-sheets.js?v=20261115-abstract-format-1"></script>
+<script>
+(async () => {
+  if (!await requireAuth(['faculty'])) return;
+  initShell();
+  await loadDB();
+  installThesisViewerModals();
+  await loadFacultyApprovalSheets();
+})();
+</script>
+</body>
+</html>

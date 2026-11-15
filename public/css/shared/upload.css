@@ -1,0 +1,258 @@
+/* ThesisLink — shared file upload dropzone styles (admin upload + adviser myuploads) */
+
+.upload-invalid {
+  background-color: #fff7ed !important;
+  box-shadow: 0 0 0 3px rgba(220,53,69,.22) !important;
+}
+.upload-field-error { margin: .35rem 0 0; color: #b42318; font-size: .78rem; line-height: 1.35; }
+.upload-field-error:empty { display: none; }
+
+.file-attached {
+  background-color: #ecfdf3 !important;
+  box-shadow: 0 0 0 2px rgba(24,95,55,.14) !important;
+  color: var(--nav-green-dark) !important;
+}
+.file-attached i { color: var(--nav-green); }
+.thesis-file-picker.file-attached,
+#adv-drop-zone.file-attached {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  text-align: left !important;
+  gap: .6rem;
+}
+.thesis-file-picker.file-attached #sdz-sub,
+#adv-drop-zone.file-attached #adz-sub { margin: 0 !important; }
+.attached-file-remove {
+  margin-left: auto;
+  padding: .35rem .65rem !important;
+  border: none;
+  background: white;
+  color: var(--red);
+  font-size: .74rem !important;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.attached-file-remove i { color: var(--red); }
+.attached-file-remove:hover { background: #fff1f2; }
+
+/* ── THESIS PARTS UPLOAD ──────────────────────────────── */
+.parts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: .65rem;
+}
+.part-drop {
+  position: relative;
+  border: 2px dashed var(--bdr);
+  border-radius: var(--radius-surface);
+  padding: .65rem .55rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  background: var(--gbg);
+  min-height: 72px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.part-drop:hover { border-color: transparent; background: #f0f0f1; }
+.part-drop.has-file { border-color: transparent; background: #ecfdf3; box-shadow: 0 0 0 2px rgba(24,95,55,.14); }
+.part-drop.drag-over { border-color: transparent; background: #e4e4e7; }
+.part-file-input {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.part-drop-icon {
+  font-size: 1.2rem; font-weight: 900; color: var(--gbs);
+  font-family: var(--font-serif); line-height: 1;
+}
+.part-drop-label { font-size: .76rem; font-weight: 700; color: var(--gdk); margin-top: 2px; }
+.part-drop-sub   { font-size: .68rem; color: var(--mut); }
+.part-drop.has-file .part-drop-icon { font-size: 1.2rem; }
+.part-file-name  { font-size: .68rem; color: var(--gbs); font-weight: 600; margin-top: 3px; word-break: break-all; line-height: 1.3; }
+.part-item {
+  display: flex; align-items: center; gap: .6rem;
+  background: var(--gbg); border: 1px solid var(--bdr); border-radius: var(--radius-control);
+  padding: .5rem .75rem; margin-bottom: .4rem; font-size: .82rem;
+}
+.part-item-icon { font-size: 1.1rem; flex-shrink: 0; }
+.part-item-name { flex: 1; font-weight: 500; color: var(--gdk); }
+.part-item-size { font-size: .72rem; color: var(--mut); white-space: nowrap; }
+.part-item-remove {
+  background: none; border: none; cursor: pointer; color: var(--mut);
+  font-size: .85rem; transition: color .15s; padding: 2px;
+}
+.part-item-remove:hover { color: #c0392b; }
+
+/* Upload confirmation and loading feedback */
+.upload-feedback-modal { max-width: 440px; }
+.duplicate-thesis-name {
+  padding: .75rem 1rem;
+  margin: .75rem 0 1rem;
+  background: var(--gbg);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-control);
+  color: var(--gdk);
+  font-weight: 700;
+}
+.upload-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  margin-top: 1.25rem;
+}
+.upload-cancel-btn {
+  padding: 8px 15px;
+  border: 1px solid var(--bdr);
+  background: white;
+  color: var(--mut);
+  font-weight: 600;
+}
+.upload-loading-box {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+}
+.upload-spinner {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 1rem;
+  border: 4px solid #e5e7eb;
+  border-top-color: #6b7280;
+  border-radius: 50%;
+  animation: upload-spin .75s linear infinite;
+}
+.upload-loading-title { font-size: 1.05rem; font-weight: 700; color: var(--gdk); }
+.upload-loading-text { margin-top: .35rem; font-size: .84rem; color: var(--mut); }
+@keyframes upload-spin { to { transform: rotate(360deg); } }
+.upload-button-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: .45rem;
+  border: 2px solid rgba(255,255,255,.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  vertical-align: -.12em;
+  animation: upload-spin .7s linear infinite;
+}
+.upload-result {
+  margin: 0 0 1rem;
+  padding: .85rem 1rem;
+  border: 1px solid;
+  border-radius: var(--radius-control);
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.upload-result-success { color: #116034; background: #ecfdf3; border-color: #a7d8ba; }
+.upload-result-danger { color: #a11a2b; background: #fff1f2; border-color: #fecdd3; }
+
+@media (prefers-reduced-motion: reduce) {
+  .upload-spinner,
+  .upload-button-spinner { animation: none; }
+}
+
+/* Compact thesis and approval-sheet file pickers */
+.thesis-file-picker,
+.approval-file-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  width: 100%;
+  min-height: 40px;
+  padding: .55rem .7rem;
+  border: 2px dashed var(--bdr);
+  border-radius: var(--radius-surface);
+  background: var(--gbg);
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.thesis-file-picker { text-align: center; position: relative; }
+.thesis-file-picker:hover { border-color: transparent; background: #f0f7f3; }
+.thesis-file-picker #sdz-icon,
+.thesis-file-picker #adz-icon { font-size: 1.15rem !important; margin-bottom: 0 !important; }
+.thesis-file-picker #sdz-label,
+.thesis-file-picker #adz-label { font-size: .8rem !important; }
+.thesis-file-picker #sdz-sub,
+.thesis-file-picker #adz-sub { margin-top: 0 !important; }
+
+@media (max-width: 560px) {
+  .thesis-file-picker { flex-wrap: wrap; }
+  .thesis-file-picker #sdz-sub,
+.thesis-file-picker #adz-sub { flex-basis: 100%; }
+}
+
+/* Optional approval-sheet attachment */
+.approval-file-picker {
+  color: var(--gmd);
+  font-size: .88rem;
+  font-weight: 600;
+}
+
+.publish-action-btn {
+  min-width: 112px;
+  min-height: 40px;
+  padding: 9px 18px;
+  font-weight: 400;
+  font-size: .95rem;
+}
+.approval-file-picker:hover { border-color: transparent; background: #f0f0f1; }
+.approval-file-picker input { display: none; }
+.approval-file-preview {
+  display: none;
+  align-items: center;
+  gap: .55rem;
+  margin-top: .75rem;
+  padding: .5rem .7rem;
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-control);
+  background: var(--gbg);
+}
+.card-body-pad:has(> .approval-file-preview.file-attached) > .approval-file-picker {
+  display: none;
+}
+.approval-file-preview.file-attached {
+  min-height: 40px;
+  margin-top: 0;
+}
+.approval-image-thumb { width: 40px; height: 40px; border-radius: var(--radius-control); object-fit: cover; border: 1px solid var(--bdr); }
+.approval-file-details { flex: 1; min-width: 0; }
+.approval-file-details > div { overflow: hidden; color: var(--gdk); font-size: .87rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.approval-file-details small { color: var(--mut); font-size: .73rem; }
+.approval-file-preview button { border: 1px solid var(--bdr); background: white; color: var(--red); padding: 4px 8px; font-size: .74rem; font-weight: 600; }
+
+/* Tighter inner controls; research/thesis cards keep their existing radius. */
+.fg-input,
+.fg-select,
+.fg-textarea,
+.thesis-file-picker,
+.approval-file-picker,
+.approval-file-preview,
+#adv-drop-zone,
+#single-file-preview,
+#adv-file-preview,
+.attached-file-remove,
+.publish-action-btn,
+.approval-file-preview button {
+  border-radius: var(--radius-control) !important;
+}
+
+/* Compact inline upload zones and previews used by all role pages. */
+#adv-drop-zone {
+  padding: .8rem !important;
+  min-height: 72px;
+}
+#adv-drop-zone #adz-icon {
+  font-size: 1.2rem !important;
+  margin-bottom: .2rem !important;
+}
+#adv-drop-zone #adz-label { font-size: .8rem !important; }
+#adv-drop-zone #adz-sub { font-size: .7rem !important; margin-top: .1rem !important; }
+#single-file-preview,
+#adv-file-preview {
+  margin-top: .55rem !important;
+  padding: .5rem .7rem !important;
+  gap: .55rem !important;
+}
+.fg-full { grid-column: 1 / -1; }
+

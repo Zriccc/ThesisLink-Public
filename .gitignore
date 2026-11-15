@@ -1,0 +1,13 @@
+/config/config.local.php
+/config/install-code.php
+/config/installed.lock
+/INSTALL-CODE.txt
+/vendor/
+/exports/
+/storage/
+/.runtime/
+/dist/
+*.log
+.env
+.env.*
+!.env.example

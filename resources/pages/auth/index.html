@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThesisLink — CCSICT Research Repository</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <meta name="description"
+    content="ThesisLink: Official research repository of the College of Computing, Sciences, and Information and Communication Technology — Isabela State University, Cabagan Campus." />
+
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+</head>
+
+<body>
+
+  <div id="auth-page">
+    <div class="auth-card">
+      <div class="auth-logos">
+        <img src="/assets/Isu_logo.jpg" alt="Isabela State University logo" />
+        <div class="auth-logos-divider"></div>
+        <img src="/assets/ccsict-logo.png" alt="CCSICT logo" />
+      </div>
+
+      <div class="auth-app-brand">
+        <div class="brand-name">ThesisLink</div>
+      </div>
+      <div class="auth-sub">CCSICT · Research Repository · ISU Cabagan</div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <div id="login-form">
+        <div id="login-alert" class="auth-alert" role="alert"></div>
+
+        <div class="mb-3">
+          <label class="form-label-custom" for="l-email">Email Address</label>
+          <input class="form-control-custom" type="email" id="l-email" autocomplete="email"
+            aria-describedby="l-email-error" onkeydown="if(event.key==='Enter')doLogin()" placeholder="juan.delacruz@isu.edu.ph" />
+          <p class="auth-field-error" id="l-email-error" aria-live="polite"></p>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-custom" for="l-pass">Password</label>
+          <div class="auth-password-field"><input class="form-control-custom" type="password" id="l-pass"
+              autocomplete="current-password" aria-describedby="l-pass-error"
+              onkeydown="if(event.key==='Enter')doLogin()" placeholder="Sample@2026" minlength="8" maxlength="20" /><button type="button"
+              onclick="toggleAuthPassword('l-pass',this)" aria-pressed="false">Show</button></div>
+          <p class="auth-field-error" id="l-pass-error" aria-live="polite"></p>
+        </div>
+        <button class="btn-auth" id="login-submit" onclick="doLogin()">Sign In</button>
+        <div class="auth-divider"><span>or</span></div>
+        <div id="google-login-submit" class="google-button-host" aria-label="Continue with Google"><span>Loading Google
+            sign-in...</span></div>
+        <p class="google-auth-note">Only verified @isu.edu.ph Google accounts are accepted.</p>
+
+        <button type="button" id="reset-password-submit" class="btn btn-link w-100 mt-2"
+          onclick="requestPasswordReset()">Forgot password?</button>
+        <div class="guest-link">
+          or <a href="#" onclick="doGuest(); return false;">continue as Guest</a>
+        </div>
+
+      </div>
+
+      <form id="first-login-password" class="password-setup-form" hidden onsubmit="finishAdviserPasswordChange(event)">
+        <div class="password-setup-heading"><span class="password-setup-icon"><i class="bi bi-shield-lock-fill"
+              aria-hidden="true"></i></span>
+          <div><span>Account setup</span>
+            <h1>Create your password</h1>
+          </div>
+        </div>
+        <p class="password-setup-intro">Use a private password with 8 to 20 characters. After saving, sign in with
+          your new password.</p>
+        <div class="mb-3"><label class="form-label-custom" for="new-adviser-password">New password</label>
+          <div class="auth-password-field"><input class="form-control-custom" type="password" required id="new-adviser-password" autocomplete="new-password"
+              aria-describedby="new-adviser-password-error" placeholder="NewPass@2026" minlength="8" maxlength="20" /><button type="button"
+              onclick="toggleAuthPassword('new-adviser-password',this)" aria-pressed="false">Show</button></div>
+          <p class="auth-field-error" id="new-adviser-password-error" aria-live="polite"></p>
+        </div>
+        <div class="mb-3"><label class="form-label-custom" for="new-adviser-confirm">Confirm new password</label>
+          <div class="auth-password-field"><input class="form-control-custom" type="password" required id="new-adviser-confirm" autocomplete="new-password"
+              aria-describedby="new-adviser-confirm-error" placeholder="NewPass@2026" minlength="8" maxlength="20" /><button type="button"
+              onclick="toggleAuthPassword('new-adviser-confirm',this)" aria-pressed="false">Show</button></div>
+          <p class="auth-field-error" id="new-adviser-confirm-error" aria-live="polite"></p>
+        </div>
+        <p id="password-change-error" class="password-setup-error" role="alert"></p>
+        <div class="password-setup-actions"><button class="btn-auth" id="save-first-password" type="submit">Save new
+            password</button><button class="password-setup-cancel" type="button"
+            onclick="cancelAdviserPasswordChange()">Cancel and sign out</button></div>
+      </form>
+      <div id="register-form" style="display:none;">
+        <div id="register-alert" class="auth-alert" role="alert"></div>
+
+        <div class="mb-3">
+          <label class="form-label-custom" for="r-name">Full Name</label>
+          <input class="form-control-custom" type="text" id="r-name" aria-describedby="r-name-error" placeholder="Juan Dela Cruz" />
+          <p class="auth-field-error" id="r-name-error" aria-live="polite"></p>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-custom" for="r-email">ISU Email</label>
+          <input class="form-control-custom" type="email" id="r-email" aria-describedby="r-email-error" placeholder="juan.delacruz@isu.edu.ph" />
+          <p class="auth-field-error" id="r-email-error" aria-live="polite"></p>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-custom" for="r-pass">Password</label>
+          <div class="auth-password-field"><input class="form-control-custom" type="password" id="r-pass" aria-describedby="register-password-requirements r-pass-error" placeholder="NewPass@2026" minlength="8" maxlength="20" /><button type="button"
+              onclick="toggleAuthPassword('r-pass',this)" aria-pressed="false">Show</button></div>
+          <ul id="register-password-requirements" class="auth-password-rules" aria-live="polite">
+            <li data-register-password-rule="length">8–20 characters</li>
+            <li data-register-password-rule="uppercase">Uppercase letter</li>
+            <li data-register-password-rule="number">Number</li>
+            <li data-register-password-rule="symbol">Symbol</li>
+          </ul>
+          <p class="auth-field-error" id="r-pass-error" aria-live="polite"></p>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-custom" for="r-confirm">Confirm Password</label>
+          <div class="auth-password-field"><input class="form-control-custom" type="password" id="r-confirm" aria-describedby="r-confirm-error" placeholder="NewPass@2026" minlength="8" maxlength="20" /><button type="button"
+              onclick="toggleAuthPassword('r-confirm',this)" aria-pressed="false">Show</button></div>
+          <p class="auth-field-error" id="r-confirm-error" aria-live="polite"></p>
+        </div>
+        <div class="auth-policy-consent">
+          <button type="button" class="auth-policy-link" onclick="openAuthPolicies()">Read Terms and Privacy
+            Policy</button>
+          <label id="r-terms-label" class="auth-policy-check is-disabled" for="r-terms">
+            <input type="checkbox" id="r-terms" disabled aria-describedby="r-terms-error" />
+            <span>I have read and agree to the Terms and Privacy Policy.</span>
+          </label>
+          <p class="auth-field-error" id="r-terms-error" aria-live="polite"></p>
+        </div>
+        <button class="btn-auth" id="register-submit" onclick="doRegister()">Create Account</button>
+        <div class="auth-divider"><span>or</span></div>
+        <div id="google-register-submit" class="google-button-host" aria-label="Continue with Google"><span>Loading
+            Google sign-in...</span></div>
+
+      </div>
+      <div id="verification-wait" class="verification-wait" hidden>
+        <i class="bi bi-envelope-check" aria-hidden="true"></i>
+        <h3>Check your email</h3>
+        <p>We sent a verification link to <strong id="verification-email"></strong>.</p>
+        <p>Open the link to verify your account. You will return here to sign in.</p>
+        <button class="btn-auth" type="button" onclick="switchAuthTab('login')">Back to Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="auth-policy-modal" role="dialog" aria-modal="true" aria-labelledby="auth-policy-title">
+    <div class="modal-box auth-policy-modal-box">
+      <div class="modal-header">
+        <div>
+          <h2 id="auth-policy-title">ThesisLink Terms and Privacy Policy</h2>
+          <p>Effective September 30, 2026</p>
+        </div>
+        <button type="button" class="modal-close" onclick="closeAuthPolicies()"
+          aria-label="Close Terms and Privacy Policy"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="auth-policy-body" id="auth-policy-body" onscroll="updateAuthPolicyReadState()" tabindex="0">
+        <section>
+          <h3>Terms of Use</h3>
+          <p>ThesisLink is the CCSICT research repository of Isabela State University–Cabagan. Use your account for
+            legitimate academic and repository activities.</p>
+          <ul>
+            <li>Provide accurate account and research information.</li>
+            <li>Upload only work and documents you are authorized to submit.</li>
+            <li>Do not misuse accounts, disrupt the service, or upload unlawful or harmful material.</li>
+            <li>Published records may be reviewed, corrected, restricted, or removed by authorized CCSICT personnel.
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>Privacy Policy</h3>
+          <p>ThesisLink processes your name, email, account role, repository activity, and submitted research
+            information to operate and secure the repository. Authentication is handled through Supabase, while uploaded
+            thesis and approval files are stored in private Cloudflare R2 storage.</p>
+          <p>Approved thesis information and permitted documents may be made available through the repository. Access to
+            administrative information is limited by account role. Contact the ThesisLink administrator or CCSICT office
+            to request correction of your account information or ask about removal and retention.</p>
+        </section>
+        <p class="auth-policy-note">By registering, you confirm that you understand these terms and consent to this
+          handling of your information.</p>
+      </div>
+      <div class="auth-policy-footer">
+        <small>Scroll through the policy to continue.</small>
+        <button type="button" class="btn-auth" id="auth-policy-read" onclick="acknowledgeAuthPolicies()" disabled>I have
+          read this policy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+
+  <script src="/vendor/dompurify/dist/purify.min.js"></script>
+  <script src="/js/shared/security.js"></script>
+  <script src="/js/shared/data.js"></script>
+  <script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+  <script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+  <script src="https://accounts.google.com/gsi/client" async onload="initializeGoogleIdentity()"
+    onerror="showGoogleLoadError()"></script>
+  <script>
+    initAuthPage();
+  </script>
+</body>
+
+</html>

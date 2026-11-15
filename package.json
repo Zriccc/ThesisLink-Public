@@ -1,0 +1,13 @@
+{
+  "name": "thesislink-public",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/integration.js",
+    "export:supabase": "node scripts/export.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2"
+  }
+}

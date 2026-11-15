@@ -1,0 +1,12 @@
+Options -Indexes
+DirectoryIndex index.php
+RewriteEngine On
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(?:css|js|assets|vendor)/ - [L]
+RewriteRule ^ index.php [L,QSA]
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "DENY"
+Header always set Referrer-Policy "same-origin"
+</IfModule>

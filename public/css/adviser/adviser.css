@@ -1,0 +1,50 @@
+/* ThesisLink — adviser-specific overrides */
+#app .faculty-approval-reports > .faculty-report-controls {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    "heading heading heading heading"
+    "type program year download"
+    "status status status status";
+  gap: .25rem .65rem;
+  align-items: end;
+  margin-bottom: .65rem;
+  padding: .65rem .8rem;
+}
+.faculty-report-heading { grid-area: heading; min-width: 0; padding: 0 0 .25rem; }
+.faculty-report-status { grid-area: status; min-width: 0; margin: .2rem 0 0; color: var(--mut); font-size: .75rem; line-height: 1.4; overflow-wrap: anywhere; }
+.faculty-report-status[hidden] { display: none; }
+.faculty-report-heading h1 { margin: 0; color: var(--gdk); font-size: 1rem; font-weight: 800; }
+.faculty-report-heading p { margin: .15rem 0 0; color: var(--mut); font-size: .72rem; }
+.faculty-report-field { display: grid; gap: .2rem; min-width: 0; color: var(--mut); font-size: .68rem; font-weight: 600; }
+.faculty-report-type { grid-area: type; }
+.faculty-report-program { grid-area: program; }
+.faculty-report-year { grid-area: year; }
+.faculty-report-field select { box-sizing: border-box; width: 100%; height: 36px; min-height: 36px; padding: .35rem 2rem .35rem .6rem; border: 1px solid var(--bdr); border-radius: var(--radius-control); background-color: #fff; color: var(--txt); font: inherit; font-size: .75rem; }
+.faculty-approval-reports #approval-report-download { grid-area: download; align-self: end; box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; height: 36px; min-height: 36px; padding: .35rem .6rem; font-size: .75rem; line-height: 1.2; white-space: nowrap; justify-content: center; text-align: center; margin: 0; }
+.faculty-approval-reports #approval-report-download:disabled { cursor: wait; opacity: .75; }
+.faculty-approval-reports .request-list-heading h2 { margin: 0; color: var(--gdk); font-size: 1rem; font-weight: 800; }
+.faculty-report-thesis-row { cursor: pointer; }
+.faculty-report-thesis-row:hover td,
+.faculty-report-thesis-row:focus-visible td { background: #f1faf4; }
+.faculty-report-thesis-row:focus-visible { outline: 2px solid var(--nav-green); outline-offset: -2px; }
+.faculty-report-thesis-cell strong,
+.faculty-report-thesis-cell small { display: block; }
+.faculty-report-thesis-cell small { margin-top: .15rem; color: var(--mut); font-size: .7rem; font-weight: 400; }
+
+@media (max-width: 1050px) {
+  #app .faculty-approval-reports > .faculty-report-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "heading heading" "type program" "year download" "status status";
+    gap: .65rem;
+  }
+}
+@media (max-width: 600px) {
+  #app .faculty-approval-reports > .faculty-report-controls {
+    grid-template-columns: 1fr;
+    grid-template-areas: "heading" "type" "program" "year" "download" "status";
+    gap: .45rem;
+  }
+  .faculty-approval-reports #approval-report-download { width: 100%; justify-self: stretch; }
+}

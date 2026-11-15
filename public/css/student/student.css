@@ -1,0 +1,134 @@
+/* ThesisLink — student-specific styles */
+
+.student-filter-anchor { width: 100%; }
+
+.student-submission-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.student-submission-note {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: .65rem;
+  padding: .8rem 1rem;
+  border: 1px solid #a7d9b8;
+  border-radius: var(--radius-surface);
+  background: #effaf3;
+  color: var(--nav-green-dark);
+  font-size: .84rem;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .student-submission-actions { align-items: stretch; flex-direction: column; }
+  .student-submission-actions .publish-action-btn { width: 100%; }
+}
+
+.student-portal-hero {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: .8rem 1rem;
+  border: 1px solid var(--nav-green-dark);
+  border-radius: var(--radius-surface);
+  background: linear-gradient(110deg, var(--nav-green-dark), #198744);
+  box-shadow: 0 3px 8px rgba(15, 74, 42, .18);
+  color: var(--wht);
+}
+
+.student-portal-eyebrow {
+  margin-bottom: .2rem;
+  color: rgba(255, 255, 255, .7);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: .82rem;
+  text-transform: uppercase;
+}
+
+.student-portal-hero h1 {
+  max-width: 780px;
+  margin: 0;
+  color: var(--wht);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.student-portal-hero h1 span {
+  color: #d79b13;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.student-portal-hero h1 em { font-weight: 600; }
+
+.student-portal-hero p {
+  max-width: 720px;
+  margin: .45rem 0 0;
+  color: rgba(255, 255, 255, .92);
+  font-size: .93rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+@media (max-width: 600px) {
+  .student-portal-hero { padding: 1rem; }
+  .student-portal-hero h1 { font-size: 1.55rem; }
+  .student-portal-hero p { font-size: .84rem; }
+}
+.notification-nav-badge{margin-left:auto;min-width:1.35rem;height:1.35rem;padding:0 .35rem;border-radius:999px;background:#fff;color:var(--gdk);font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.notification-page-card{width:100%;max-width:none;margin:0;padding:.85rem;flex:1;min-height:0;display:flex;flex-direction:column}
+#app .page > .notification-page-card{flex:1 0 auto;align-self:stretch}
+.notification-update{margin:.25rem 0 0;color:var(--mut);font-size:.76rem;line-height:1.4;overflow-wrap:anywhere}
+.notification-view-action{color:var(--nav-green);font-size:.75rem;font-weight:600;text-decoration:none}
+.notification-view-action:hover{text-decoration:underline}
+#notification-list{display:grid;align-content:start;grid-auto-rows:max-content;gap:.4rem;flex:1}
+#notification-list.notification-list-feedback{align-content:stretch;grid-auto-rows:1fr}
+.notification-card{padding:.5rem .7rem;border:1px solid var(--bdr);border-radius:var(--radius-control);background:#fff}
+.notification-card.is-unread{border-left:3px solid var(--gbs)}
+.notification-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.notification-card-heading>div{display:flex;align-items:center;min-width:0;gap:.55rem}
+.notification-card-heading time{color:var(--mut);font-size:.7rem;white-space:nowrap}
+.notification-status{display:inline-flex;align-items:center;flex:0 0 auto;gap:.3rem;padding:.2rem .45rem;border-radius:999px;font-size:.68rem;font-weight:700}
+.notification-status-approved{background:#e6f6ec;color:#176b3d}.notification-status-declined{background:#feecee;color:#a7262e}
+.notification-thesis-title{min-width:0;overflow:hidden;color:var(--txt);font-size:.82rem;text-overflow:ellipsis;white-space:nowrap}
+.notification-comment{margin:.4rem 0 0;padding:.4rem .55rem;border-left:2px solid #d9a3a7;background:#fff8f8}
+.notification-comment strong{display:block;margin-bottom:.2rem;color:#7e2027;font-size:.7rem;text-transform:uppercase;letter-spacing:.02em}
+.notification-comment p{margin:0;color:var(--txt);font-size:.8rem;line-height:1.4;white-space:pre-wrap}
+.notification-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-top:.4rem}
+.notification-actions button,.notification-feedback button{padding:.38rem .7rem;border:1px solid var(--bdr);border-radius:var(--radius-control);background:#fff;color:var(--gdk);font-size:.73rem;font-weight:600}
+.notification-feedback button{border-color:var(--nav-green);background:var(--nav-green);color:#fff}
+.notification-feedback button:hover{background:var(--nav-green-dark)}
+.notification-actions .notification-primary-action{border-color:var(--nav-green);background:var(--nav-green);color:#fff}
+.notification-read-label{margin-left:auto;color:var(--mut);font-size:.7rem}.notification-read-action{margin-left:auto}
+.notification-feedback{min-height:160px;height:100%;padding:1.5rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;text-align:center;color:var(--mut)}.notification-feedback i{font-size:1.65rem}.notification-feedback strong{color:var(--txt)}.notification-feedback span{font-size:.82rem;line-height:1.45}
+.notification-skeleton{display:grid;gap:.55rem}.notification-skeleton span{height:74px;background:linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%);background-size:200% 100%;animation:skeleton 1.2s infinite}
+.resubmission-notice{display:grid;gap:.25rem;margin-bottom:1rem;padding:.8rem .9rem;border:1px solid #e5b6ba;border-radius:var(--radius-control);background:#fff7f7;color:var(--txt);font-size:.8rem}
+.resubmission-notice strong{color:#8b252d}.resubmission-notice span{line-height:1.45;white-space:pre-wrap}
+.my-uploads-page>header{margin-bottom:1rem}.my-uploads-page>header h1{font-size:1.4rem}.my-uploads-page>header p{color:var(--mut);font-size:.85rem;max-width:680px}.my-upload-footer{gap:.65rem;align-items:center;flex-wrap:wrap}.my-upload-remove{color:#a7262e}.my-upload-remove:disabled{opacity:.6;cursor:wait}
+@media(max-width:640px){
+  .notification-page-card{padding:.65rem;border:0;box-shadow:none}
+  .notification-feedback{min-height:130px;padding:1rem .65rem}
+  #notification-list{gap:.45rem}
+  .notification-card{padding:.5rem .6rem}
+  .notification-card-heading{display:block}
+  .notification-card-heading>div{align-items:flex-start}
+  .notification-card-heading time{display:block;margin-top:.3rem}
+  .notification-thesis-title{white-space:normal}
+  .notification-comment{margin-top:.55rem;padding:.5rem .6rem}
+  .notification-actions{margin-top:.35rem}
+}
+.my-uploads-page{max-width:980px;margin:0 auto;width:100%}
+#student-upload-list{display:grid;gap:.75rem}
+.my-upload-filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}.my-upload-filter{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .8rem;border:1px solid var(--bdr);border-radius:var(--radius-control);background:#fff;color:var(--txt);font-size:.8rem;font-weight:600}.my-upload-filter[aria-pressed="true"]{background:var(--nav-green);border-color:var(--nav-green);color:#fff}.my-upload-filter span{padding:0 .4rem;border-radius:999px;background:rgba(128,128,128,.15)}
+.my-upload-card{border:1px solid var(--bdr);border-radius:var(--radius-surface);background:#fff;box-shadow:var(--shadow);overflow:hidden}
+.my-upload-main{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1rem 1.1rem}.my-upload-main h2{margin:.2rem 0;color:var(--txt);font-size:1rem}.my-upload-main time,.my-upload-program{color:var(--mut);font-size:.75rem}.my-upload-program{font-weight:700}
+.my-upload-status{flex:0 0 auto;padding:.28rem .55rem;border-radius:999px;font-size:.72rem;font-weight:700}.status-pending{background:#fff7db;color:#8a6200}.status-declined{background:#feecee;color:#a7262e}.status-published{background:#e6f6ec;color:#176b3d}
+.my-upload-comment{margin:0 1.1rem .8rem;padding:.65rem .75rem;border-left:3px solid #d6848a;background:#fff8f8}.my-upload-comment strong{display:block;margin-bottom:.2rem;color:#7e2027;font-size:.72rem;text-transform:uppercase}.my-upload-comment p{margin:0;white-space:pre-wrap;font-size:.82rem;line-height:1.4}
+.my-upload-footer{display:flex;justify-content:flex-end;padding:.7rem 1.1rem;border-top:1px solid var(--bdr);background:#fafafa}.my-upload-action,.my-upload-waiting{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:650}.my-upload-action{padding:.42rem .7rem;border:1px solid var(--bdr);border-radius:var(--radius-control);background:#fff;color:var(--gdk);text-decoration:none}.my-upload-primary{border-color:var(--nav-green);background:var(--nav-green);color:#fff}.my-upload-waiting{color:var(--mut)}
+.my-upload-empty{min-height:300px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.45rem;border:1px solid var(--bdr);border-radius:var(--radius-surface);background:#fff;color:var(--mut);text-align:center}.my-upload-empty i{font-size:2rem}.my-upload-empty strong{color:var(--txt)}.my-upload-empty a,.my-upload-empty button{margin-top:.4rem;padding:.45rem .75rem;border:1px solid var(--nav-green);border-radius:var(--radius-control);background:var(--nav-green);color:#fff;text-decoration:none}
+.my-upload-skeleton{display:grid;gap:.75rem}.my-upload-skeleton span{height:112px;border-radius:var(--radius-surface);background:linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%);background-size:200% 100%;animation:skeleton 1.2s infinite}
+@media (max-width:640px){.my-upload-main{padding:.8rem;gap:.6rem}.my-upload-main h2{font-size:.9rem}.my-upload-comment{margin:0 .8rem .65rem}.my-upload-footer{padding:.65rem .8rem}.my-upload-action{width:100%;justify-content:center}}

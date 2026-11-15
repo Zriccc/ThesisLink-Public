@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThesisLink — CCSICT Research Repository</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <script>
+    (() => {
+      const query = new URLSearchParams(location.search);
+      const fragment = new URLSearchParams(location.hash.slice(1));
+      if (query.has('code') || query.has('token_hash')) {
+        location.replace('/api/auth/confirm' + location.search);
+      } else if (fragment.has('access_token')) {
+        location.replace('/pages/auth/index.html?verified=1');
+      } else if (fragment.has('error')) {
+        location.replace('/pages/auth/index.html?error=confirmation');
+      }
+    })();
+  </script>
+
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+
+  <script src="/vendor/mammoth/mammoth.browser.js"></script>
+  <script src="/vendor/jsqr/dist/jsQR.js"></script>
+
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/shared/thesis-grid.css?v=20261106-compact-2" />
+  <link rel="stylesheet" href="/css/guest/guest.css?v=20261106-compact-2" />
+</head>
+<body>
+
+<div id="guest-page" style="display: flex;">
+  <nav class="guest-navbar">
+    <div class="guest-navbar-container">
+      <div class="guest-navbar-left">
+        <div class="guest-logo">
+          <div class="guest-logo-circle">T</div>
+          <div class="guest-logo-title">ThesisLink</div>
+        </div>
+      </div>
+      <div class="guest-search-section guest-navbar-search">
+        <button class="guest-filter-toggle" type="button" onclick="toggleGuestFilters(event)" aria-label="Show filters" aria-expanded="false"><i class="bi bi-funnel-fill" aria-hidden="true"></i></button>
+        <div class="guest-search-control">
+          <input type="text" class="guest-search-input" id="guest-search" placeholder="ThesisLink or Jheric Mayubay" />
+          <button class="guest-search-clear" id="guest-search-clear" type="button" aria-label="Clear search" hidden><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+          <button class="guest-search-btn" type="button" aria-label="Search"><i class="bi bi-search" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="guest-navbar-right">
+        <button class="guest-btn-qr" type="button" onclick="openGuestQRScanner()" aria-label="Open QR scanner" title="Open QR scanner"><i class="bi bi-qr-code-scan" aria-hidden="true"></i></button>
+        <button class="guest-btn-signup" id="guest-sign-in" type="button" onclick="backToAuth()">
+          <span>Sign In</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="guest-container">
+    <div class="guest-filters" id="guest-filters-panel">
+      <div class="guest-filter-dropdown">
+        <button class="guest-filter-btn" onclick="toggleFilterDropdown('year-filter')">Year <i class="bi bi-chevron-down"></i></button>
+        <div class="guest-filter-menu" id="year-filter">
+          <div class="guest-filter-item" onclick="applyGuestFilter('year', '')">All Years</div>
+        </div>
+      </div>
+      <div class="guest-filter-dropdown">
+        <button class="guest-filter-btn" onclick="toggleFilterDropdown('course-filter')">Program <i class="bi bi-chevron-down"></i></button>
+        <div class="guest-filter-menu" id="course-filter">
+          <div class="guest-filter-item" onclick="applyGuestFilter('course', '')">All Programs</div>
+          <div class="guest-filter-item" onclick="applyGuestFilter('course', 'BSCS')">BSCS</div>
+          <div class="guest-filter-item" onclick="applyGuestFilter('course', 'BSIT')">BSIT</div>
+          <div class="guest-filter-item" onclick="applyGuestFilter('course', 'BSDSA')">BSDSA</div>
+        </div>
+      </div>
+      <div class="guest-filter-dropdown">
+        <button class="guest-filter-btn" onclick="toggleFilterDropdown('adviser-filter')">Adviser <i class="bi bi-chevron-down"></i></button>
+        <div class="guest-filter-menu" id="adviser-filter">
+          <div class="guest-filter-item" onclick="applyGuestFilter('adviser', '')">All Advisers</div>
+        </div>
+      </div>
+      <div class="guest-filter-dropdown">
+        <button class="guest-filter-btn" onclick="toggleFilterDropdown('author-filter')">Author <i class="bi bi-chevron-down"></i></button>
+        <div class="guest-filter-menu" id="author-filter">
+          <div class="guest-filter-item" onclick="applyGuestFilter('author', '')">All Authors</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="guest-portal-hero" aria-labelledby="guest-portal-title">
+      <div class="guest-portal-eyebrow">Guest Portal</div>
+      <h1 id="guest-portal-title">
+        Explore <span id="guest-research-count">0</span> <em>research papers</em> from CCSICT
+      </h1>
+      <p>ThesisLink is CCSICT’s digital research repository for submitting, reviewing, managing, and discovering approved theses from BSCS, BSDSA, and BSIT.</p>
+    </section>
+
+    <div class="guest-active-filters" id="guest-active-filters" aria-live="polite"></div>
+    <div class="guest-results-table-container" id="guest-results">
+      <!-- Read-only thesis table will be inserted here -->
+    </div>
+  </div>
+  <footer class="guest-footer">
+    <p><strong>© 2026 ThesisLink</strong><span aria-hidden="true"> · </span>CCSICT<span aria-hidden="true"> · </span>Isabela State University – Cabagan Campus</p>
+  </footer>
+</div>
+
+<!-- THESIS MODAL -->
+<div class="modal-overlay" id="thesis-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-text" id="m-title"></div>
+      <div class="modal-close" onclick="closeModal('thesis-modal')"><i class="bi bi-x-lg"></i></div>
+    </div>
+    <div class="modal-body">
+      <div class="meta-row" id="m-meta"></div>
+      <div class="section-divider">Abstract</div>
+      <div class="abstract-text" id="m-abstract"></div>
+      <div id="m-chapters"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILE VIEWER MODAL (guest can view abstracts / QR-unlocked files only) -->
+<div class="modal-overlay" id="file-viewer-modal">
+  <div class="modal-box" style="max-width:920px;width:96vw;padding:0;overflow:hidden;">
+    <div class="fv-header">
+      <div class="fv-header-info">
+        <span class="fv-header-icon" id="fv-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
+        <div>
+          <div class="fv-header-title" id="fv-title">File</div>
+          <div class="fv-header-sub" id="fv-sub">View Only</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="fv-view-badge" id="fv-guest-badge" style="display:none;"><i class="bi bi-eye-fill"></i> Guest View</span>
+        <span class="fv-view-badge"><i class="bi bi-eye-fill"></i> View Only</span>
+        <button class="fv-close-btn" onclick="closeModal('file-viewer-modal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </div>
+    <div id="fv-guest-notice" style="display:none;background:#fffbea;border-bottom:1px solid #fcd34d;padding:0.75rem 1.5rem;font-size:0.85rem;color:#92400e;">
+      <i class="bi bi-lock-fill"></i> <strong>Guest Viewing:</strong> Printing and downloading are disabled for security. You can view the document only.
+    </div>
+    <div id="fv-body" class="fv-body"></div>
+  </div>
+</div>
+
+<!-- Guest QR scanner -->
+<div class="guest-scanner" id="guest-scanner" role="dialog" aria-modal="true" aria-labelledby="guest-scanner-title" hidden>
+  <button class="guest-scanner-backdrop" type="button" onclick="closeGuestQRScanner()" aria-label="Close QR scanner"></button>
+  <section class="guest-scanner-panel">
+    <header class="guest-scanner-header">
+      <div>
+        <h2 id="guest-scanner-title">Scan thesis QR code</h2>
+        <p id="guest-scanner-status" role="status" aria-live="polite">Starting camera…</p>
+      </div>
+      <button class="guest-scanner-close" type="button" onclick="closeGuestQRScanner()" aria-label="Close QR scanner"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+    </header>
+    <div class="guest-scanner-viewport">
+      <video id="qr-video" playsinline muted></video>
+      <div class="guest-scanner-frame" aria-hidden="true"></div>
+    </div>
+    <p class="guest-scanner-help">Place a ThesisLink QR code inside the frame.</p>
+    <canvas id="qr-canvas" hidden></canvas>
+  </section>
+</div>
+
+<!-- Toast notification -->
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script>
+<script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+<script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+<script src="/js/shared/thesis-render.js?v=20261002-1"></script>
+<script src="/js/shared/thesis-crud.js?v=20261002-2"></script>
+<script src="/js/guest/guest.js?v=20261002-1"></script>
+<script>
+
+  (async () => {
+  initGuestAccount();
+  try { await loadDB(); } catch (_) { /* the public shell and controls remain usable */ }
+  document.getElementById('guest-research-count').textContent = DB.length.toLocaleString();
+  renderGuestTheses(DB);
+  setupGuestEventListeners();
+  openGuestThesisFromPath();
+  })();
+</script>
+</body>
+</html>

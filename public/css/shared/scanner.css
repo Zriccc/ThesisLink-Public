@@ -1,0 +1,81 @@
+/* ThesisLink — shared QR scanner styles */
+
+/* ── QR SCANNER ───────────────────────────────────────── */
+@keyframes scanLine {
+  0%   { top: 8px;   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: calc(100% - 10px); opacity: 0; }
+}
+#scan-result-bar { display: none; }
+#scan-result-bar.visible { display: flex !important; }
+
+.scanner-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.scanner-camera-card,
+.scanner-guide-card {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-surface);
+}
+
+.scanner-guide-card {
+  align-self: stretch;
+}
+
+.scanner-camera-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 260px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #151515, #080808);
+}
+
+.scanner-camera-viewport video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.scanner-guide-card .card-body-pad {
+  line-height: 1.65 !important;
+}
+
+@media (max-width: 900px) {
+  .scanner-layout {
+    grid-template-columns: 1fr;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .scanner-guide-card { align-self: start; }
+
+  .scanner-camera-viewport {
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 560px) {
+  .scanner-layout { gap: .75rem; }
+  .scanner-camera-card .card-header-row {
+    align-items: flex-start;
+    gap: .6rem;
+  }
+  .scanner-camera-card .card-header-row > div {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .scanner-camera-viewport { aspect-ratio: 4 / 3; }
+  #scan-box { width: 68vw !important; height: 68vw !important; max-width: 210px; max-height: 210px; }
+  #scan-result-bar { padding: .75rem !important; flex-wrap: wrap; }
+}
+

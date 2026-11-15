@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logs - ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+
+</head>
+<body>
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sb-hd">
+      <div class="sb-logos">
+        <div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.55rem;font-family:var(--font-serif);">ISU</div>
+        <div style="width:28px;height:28px;border-radius:5px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.45rem;font-family:var(--font-serif);">CCSI</div>
+      </div>
+      <div class="sb-brand"><div class="sb-icon">T</div><div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div></div>
+    </div>
+    <div class="sb-user"><div class="sb-name" id="sb-name"></div><div class="sb-email" id="sb-email"></div><div class="role-badge" id="sb-role-badge"></div></div>
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/dashboard.html'" data-title="Home" data-href="/pages/admin/dashboard.html"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/repository.html'" data-title="Repository" data-href="/pages/admin/repository.html"><span class="ni-icon"><i class="bi bi-journal-bookmark-fill"></i></span> Repository</div>
+      <div class="nav-label">Management</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/upload.html'" data-title="Upload Thesis" data-href="/pages/admin/upload.html"><span class="ni-icon"><i class="bi bi-upload"></i></span> Upload Thesis</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/requests.html'" data-title="Upload Requests" data-href="/pages/admin/requests.html"><span class="ni-icon"><i class="bi bi-inbox-fill"></i></span> Upload Requests</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/reports.html'" data-title="Reports" data-href="/pages/admin/reports.html"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/users.html'" data-title="Users" data-href="/pages/admin/users.html"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Users</div>
+      <a class="nav-item" href="/pages/admin/logs.html" data-title="Logs"><span class="ni-icon"><i class="bi bi-clock-history"></i></span> Logs</a>
+      <div class="nav-label">Tools</div>
+      <div class="nav-item" onclick="window.location.href='/pages/admin/scanner.html'" data-title="QR Scanner" data-href="/pages/admin/scanner.html"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</div>
+    </nav>
+    <div class="sb-footer"><button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button></div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:.75rem;"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Logs</div></div>
+      <div class="tb-right"></div>
+    </div>
+
+    <main class="page active admin-logs-page">
+      <section class="card-box">
+        <div class="card-header-row"><span class="card-title-text">Important activity logs</span></div>
+        <div class="card-body-pad">
+          <p class="text-muted">Thesis and account changes only. Keeps the latest 1,000 entries for up to 90 days. Views, searches, and downloads are excluded.</p>
+          <div class="row g-2 mb-2 logs-filters">
+            <div class="col-md-6"><label for="logs-search" class="form-label">Search logs</label><input id="logs-search" class="form-control" type="search" maxlength="240" placeholder="Published ThesisLink by Juan Dela Cruz" ></div>
+            <div class="col-md-3"><label for="logs-action" class="form-label">Action</label><select id="logs-action" class="form-select"><option value="">All actions</option></select></div>
+            <div class="col-md-3"><label for="logs-period" class="form-label">Time period</label><select id="logs-period" class="form-select"><option value="90">Last 90 days</option><option value="30">Last 30 days</option><option value="7">Last 7 days</option><option value="1">Last 24 hours</option></select></div>
+          </div>
+          <div class="table-responsive"><table class="data-table"><caption class="visually-hidden">Important thesis and account activity, newest first</caption><thead><tr><th scope="col">Date &amp; time</th><th scope="col">Person</th><th scope="col">Action</th><th scope="col">Affected record</th></tr></thead><tbody id="logs-tbody"></tbody></table></div>
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2 logs-pagination">
+            <span id="logs-count" class="text-muted" role="status" aria-live="polite"></span>
+            <div class="d-flex gap-2"><button id="logs-prev" class="btn btn-sm btn-outline-secondary" type="button">Previous</button><button id="logs-next" class="btn btn-sm btn-outline-secondary" type="button">Next</button></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script>
+<script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+<script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+<script src="/js/admin/logs.js"></script>
+<script>
+(async () => {
+  if (!await requireAuth(['admin'])) return;
+  initShell();
+  await loadActivities();
+  initLogs();
+
+})();
+</script>
+</body>
+</html>

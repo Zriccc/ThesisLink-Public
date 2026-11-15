@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Security — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/shared/account.css?v=20261106-compact-2" />
+</head>
+<body class="account-page">
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar sidebar-shell-loading" aria-busy="true">
+    <div class="sb-hd">
+      <div class="sb-brand">
+        <div class="sb-icon">T</div>
+        <div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div>
+      </div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-name" id="sb-name"></div>
+      <div class="sb-email" id="sb-email"></div>
+      <div class="role-badge" id="sb-role-badge"></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nav-label" data-account-roles="admin faculty student">Main</div>
+      <a class="nav-item" href="/pages/admin/dashboard.html" data-title="Home" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</a>
+      <a class="nav-item" href="/pages/admin/repository.html" data-title="Repository" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-journal-bookmark-fill"></i></span> Repository</a>
+      <a class="nav-item" href="/pages/adviser/repository.html" data-title="Home" data-account-roles="faculty"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</a>
+      <a class="nav-item" href="/pages/student/repository.html" data-title="Home" data-account-roles="student"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</a>
+
+      <div class="nav-label" data-account-roles="admin faculty student">Management</div>
+      <a class="nav-item" href="/pages/admin/upload.html" data-title="Upload Thesis" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-upload"></i></span> Upload Thesis</a>
+      <a class="nav-item" href="/pages/admin/requests.html" data-title="Upload Requests" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-inbox-fill"></i></span> Upload Requests</a>
+      <a class="nav-item" href="/pages/admin/reports.html" data-title="Reports" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</a>
+      <a class="nav-item" href="/pages/admin/users.html" data-title="Users" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Users</a>
+      <a class="nav-item" href="/pages/admin/logs.html" data-title="Logs" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-clock-history"></i></span> Logs</a>
+      <a class="nav-item" href="/pages/adviser/reports.html" data-title="Reports" data-account-roles="faculty"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</a>
+      <a class="nav-item" href="/pages/adviser/advisees.html" data-title="Advisees" data-account-roles="faculty"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Advisees</a>
+      <a class="nav-item" href="/pages/student/upload.html" data-title="Upload Thesis" data-account-roles="student"><span class="ni-icon"><i class="bi bi-upload"></i></span> Upload Thesis</a>
+      <a class="nav-item" href="/pages/student/notifications.html" data-title="Notifications" data-account-roles="student"><span class="ni-icon"><i class="bi bi-bell-fill"></i></span> Notifications</a>
+
+      <div class="nav-label" data-account-roles="admin faculty student">Tools</div>
+      <a class="nav-item" href="/pages/admin/scanner.html" data-title="QR Scanner" data-account-roles="admin"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</a>
+      <a class="nav-item" href="/pages/adviser/scanner.html" data-title="QR Scanner" data-account-roles="faculty"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</a>
+      <a class="nav-item" href="/pages/student/scanner.html" data-title="QR Scanner" data-account-roles="student"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</a>
+      <div class="nav-label">Account</div>
+      <a class="nav-item active" href="/pages/account/index.html" data-title="Account" data-account-navigation="true"><span class="ni-icon"><i class="bi bi-person-gear"></i></span> Account</a>
+    </nav>
+    <div class="sb-footer">
+      <button id="account-logout" class="btn-logout" type="button" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div class="account-topbar-title"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Account</div></div>
+    </header>
+
+  <main class="page active account-main">
+    <div class="account-content">
+    <section id="account-profile" class="account-profile" aria-label="Account details" aria-busy="true">
+      <div class="account-profile-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="account-profile-content" hidden>
+        <dl><div><dt>Name</dt><dd id="account-name"></dd></div><div><dt>Email</dt><dd id="account-email"></dd></div><div><dt>Role</dt><dd id="account-role"></dd></div></dl>
+      </div>
+    </section>
+
+    <div id="account-alert" class="account-alert" role="alert" hidden></div>
+
+    <section id="password-panel" class="account-panel" hidden aria-labelledby="password-title">
+      <div class="account-panel-heading"><h2 id="password-title">Change your password</h2></div>
+      <form id="password-form" onsubmit="submitPasswordChange(event)" novalidate>
+        <div class="account-field"><label for="current-password">Current password</label><div class="account-password"><input id="current-password" type="password" autocomplete="current-password" aria-describedby="current-password-error" placeholder="Current@2026" minlength="8" maxlength="20" /><button type="button" onclick="toggleAuthPassword('current-password',this)" aria-pressed="false">Show</button></div><p id="current-password-error" class="account-field-error"></p></div>
+        <div class="account-field"><label for="new-password">New password</label><div class="account-password"><input id="new-password" type="password" autocomplete="new-password" aria-describedby="password-requirements new-password-error" placeholder="NewPass@2026" minlength="8" maxlength="20" /><button type="button" onclick="toggleAuthPassword('new-password',this)" aria-pressed="false">Show</button></div><ul id="password-requirements" class="account-password-rules" aria-live="polite"><li data-password-rule="length">8–20 characters</li><li data-password-rule="uppercase">Uppercase letter</li><li data-password-rule="number">Number</li><li data-password-rule="symbol">Symbol</li></ul><p id="new-password-error" class="account-field-error"></p></div>
+        <div class="account-field"><label for="confirm-password">Confirm new password</label><div class="account-password"><input id="confirm-password" type="password" autocomplete="new-password" aria-describedby="confirm-password-error" placeholder="NewPass@2026" minlength="8" maxlength="20" /><button type="button" onclick="toggleAuthPassword('confirm-password',this)" aria-pressed="false">Show</button></div><p id="confirm-password-error" class="account-field-error"></p></div>
+        <button id="password-submit" class="account-submit" type="submit">Update password</button>
+      </form>
+      <div class="account-reset">
+        <p>Forgot your current password?</p>
+        <button id="account-reset-password" class="account-secondary" type="button" onclick="requestAccountPasswordReset()">Send password reset email</button>
+        <p id="account-reset-status" class="account-reset-status" role="status" hidden></p>
+      </div>
+    </section>
+    </div>
+  </main>
+  </div>
+</div>
+
+  <div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+
+  <script src="/js/shared/security.js"></script>
+  <script src="/js/shared/data.js"></script>
+  <script src="/js/shared/ui.js?v=20261108-testing-1"></script>
+  <script src="/js/shared/auth.js?v=20261106-approval-2"></script>
+  <script src="/js/shared/account.js"></script>
+  <script>initAccountPage();</script>
+</body>
+</html>

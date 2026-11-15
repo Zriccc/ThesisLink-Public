@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Requests — ThesisLink</title>
+  <link rel="icon" type="image/png" href="/assets/ccsict-logo.png" />
+  <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/vendor/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/outfit/index.css" rel="stylesheet" />
+  <link href="/vendor/@fontsource/jetbrains-mono/index.css" rel="stylesheet" />
+  <script src="/vendor/mammoth/mammoth.browser.js"></script>
+  <link rel="stylesheet" href="/css/shared/base.css?v=20261108-dropdowns-3" />
+  <link rel="stylesheet" href="/css/admin/admin.css?v=20261106-responsive-1" />
+</head>
+<body>
+<div id="app" style="display:flex;">
+  <div class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sb-hd"><div class="sb-brand"><div class="sb-icon">T</div><div><div class="sb-title">ThesisLink</div><div class="sb-clg">CCSICT Repository</div></div></div></div>
+    <div class="sb-user"><div class="sb-name" id="sb-name"></div><div class="sb-email" id="sb-email"></div><div class="role-badge" id="sb-role-badge"></div></div>
+    <nav class="sb-nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item" onclick="location.href='/pages/admin/dashboard.html'" data-title="Home" data-href="/pages/admin/dashboard.html"><span class="ni-icon"><i class="bi bi-house-door-fill"></i></span> Home</div>
+      <div class="nav-item" onclick="location.href='/pages/admin/repository.html'" data-title="Repository" data-href="/pages/admin/repository.html"><span class="ni-icon"><i class="bi bi-journal-bookmark-fill"></i></span> Repository</div>
+      <div class="nav-label">Manage</div>
+      <div class="nav-item" onclick="location.href='/pages/admin/upload.html'" data-title="Upload Thesis" data-href="/pages/admin/upload.html"><span class="ni-icon"><i class="bi bi-upload"></i></span> Upload Thesis</div>
+      <div class="nav-item active" onclick="location.href='/pages/admin/requests.html'" data-title="Upload Requests" data-href="/pages/admin/requests.html"><span class="ni-icon"><i class="bi bi-inbox-fill"></i></span> Upload Requests</div>
+      <div class="nav-item" onclick="location.href='/pages/admin/reports.html'" data-title="Reports" data-href="/pages/admin/reports.html"><span class="ni-icon"><i class="bi bi-bar-chart-line-fill"></i></span> Reports</div>
+      <div class="nav-item" onclick="location.href='/pages/admin/users.html'" data-title="Users" data-href="/pages/admin/users.html"><span class="ni-icon"><i class="bi bi-people-fill"></i></span> Users</div>
+      <a class="nav-item" href="/pages/admin/logs.html" data-title="Logs"><span class="ni-icon"><i class="bi bi-clock-history"></i></span> Logs</a>
+      <div class="nav-label">Tools</div>
+      <div class="nav-item" onclick="location.href='/pages/admin/scanner.html'" data-title="QR Scanner" data-href="/pages/admin/scanner.html"><span class="ni-icon"><i class="bi bi-camera-fill"></i></span> QR Scanner</div>
+    </nav>
+    <div class="sb-footer"><button class="btn-logout" onclick="doLogout()"><i class="bi bi-box-arrow-left"></i> Sign Out</button></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar"><div style="display:flex;align-items:center;gap:.75rem;"><button id="menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button><div class="tb-title" id="tb-title">Upload Requests</div></div></div>
+    <div class="page active upload-requests-page">
+      <section class="card-box request-list-card">
+        <div class="request-list-heading">
+          <h1>Student upload requests</h1>
+          <p>Review thesis info and approval sheet before publishing.</p>
+        </div>
+        <div class="request-table-wrap"><table class="data-table request-table"><thead><tr><th>Student / Program</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead><tbody id="upload-requests-body"></tbody></table></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="modal-overlay" id="thesis-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title-text" id="m-title"></div>
+      <button class="modal-close" onclick="closeModal('thesis-modal')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="meta-row" id="m-meta"></div>
+      <div class="section-divider">Abstract</div>
+      <div class="abstract-text" id="m-abstract"></div>
+      <div id="m-chapters"></div>
+      <div class="request-review-actions" id="request-modal-actions"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="decline-request-modal">
+  <div class="modal-box decline-request-dialog">
+    <div class="modal-header"><div class="modal-title-text">Decline submission</div><button class="modal-close" type="button" onclick="closeModal('decline-request-modal')" aria-label="Close"><i class="bi bi-x-lg"></i></button></div>
+    <form class="decline-request-form" onsubmit="submitDecline(event)">
+      <div class="decline-request-body">
+        <p class="decline-request-summary">Declining <strong id="decline-thesis-title"></strong>. Tell the student what needs to be corrected.</p>
+        <div class="decline-request-field">
+          <label for="decline-remarks">Reason for declining <span aria-hidden="true">*</span></label>
+          <textarea id="decline-remarks" required maxlength="1000" rows="5" placeholder="Please correct the adviser name and upload the signed approval sheet."></textarea>
+          <div id="decline-remarks-error" class="field-error" role="alert"></div>
+        </div>
+      </div>
+      <div class="decline-request-footer"><button type="button" class="request-action" onclick="closeModal('decline-request-modal')">Cancel</button><button id="decline-submit-button" class="request-action request-decline" type="submit">Decline submission</button></div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="file-viewer-modal">
+  <div class="modal-box" style="max-width:920px;width:96vw;padding:0;overflow:hidden;">
+    <div class="fv-header">
+      <div class="fv-header-info">
+        <span class="fv-header-icon" id="fv-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
+        <div><div class="fv-header-title" id="fv-title">File</div><div class="fv-header-sub" id="fv-sub">View Only</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="fv-view-badge" id="fv-guest-badge" style="display:none;"><i class="bi bi-eye-fill"></i> Guest View</span>
+        <span class="fv-view-badge"><i class="bi bi-eye-fill"></i> View Only</span>
+        <button class="fv-close-btn" onclick="closeModal('file-viewer-modal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </div>
+    <div id="fv-guest-notice" style="display:none;"></div>
+    <div id="fv-body" class="fv-body"></div>
+  </div>
+</div>
+<div class="toast-custom" id="toast-el" role="status" aria-live="polite"></div>
+<script src="/vendor/dompurify/dist/purify.min.js"></script>
+<script src="/js/shared/security.js"></script>
+<script src="/js/shared/data.js"></script><script src="/js/shared/ui.js?v=20261108-testing-1"></script><script src="/js/shared/auth.js?v=20261106-approval-2"></script><script src="/js/shared/thesis-render.js"></script><script src="/js/shared/thesis-crud.js"></script><script src="/js/admin/requests.js"></script>
+<script>
+(async () => {if (!await requireAuth(['admin'])) return; await loadDB(); initShell(); initializeUploadRequests();
+})();
+</script>
+</body>
+</html>
